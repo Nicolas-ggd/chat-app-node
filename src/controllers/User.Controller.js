@@ -19,8 +19,8 @@ const SearchUser = async (req, res) => {
         const searchUsers = await User.find({ name: { $regex: searchValue, $options: "i" } })
             .select("-password -refresh_token -ResetPasswordHash -verificationCode")
             .exec();
-        console.log(searchUsers);
-        if (searchUsers.length > 0) {
+
+            if (searchUsers.length > 0) {
             return res.status(200).json(searchUsers);
         } else {
             return res.status(404).json({ message: "Users not found" });

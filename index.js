@@ -13,6 +13,7 @@ const userAuth = require('./src/routes/Auth.Routes');
 const userLogOut = require('./src/routes/Logout.Routes');
 const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
+const chat = require('./src/routes/Chat.Routes');
 
 const app = express();
 connectDb();
@@ -27,13 +28,13 @@ app.use('/auth', userAuth);
 app.use('/logout', userLogOut);
 app.use('/reset-password', resetPassword);
 app.use('/user', userInfo);
+app.use('/chat', chat);
 
 app.use(verifyJWT);
 app.use(notFound);
 app.use(errorHandler);
 
 const server = app.listen(process.env.PORT, console.log(`Server running on port ${process.env.PORT}`));
-
 const io = new Server(server, {
     cors: {
         origin: 'http://localhost:5173',
@@ -47,5 +48,15 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log(`${socket.id} user disconnected!`);
     });
+
+    socket.on('startConversation', (data) => {
+        socket.join(data);
+    });
+
+    socket.on("private-message", (data) => {
+        console.log(data);
+        io.emit('private-message-received', data);
+    });
+
 
 });
