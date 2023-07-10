@@ -53,14 +53,6 @@ const GetConversationByUser = async (req, res) => {
   }
 };
 
-const ActiveConversation = async (req, res) => {
-  try {
-    await Chat.findOne({ _id })
-  } catch (error) {
-    return res.status(500).json({ message: "Can't get active conversations" });
-  };
-};
-
 const MarkMessageAsRead = async (req, res) => {
   const { messageId } = req.body;
 
@@ -81,6 +73,5 @@ const MarkMessageAsRead = async (req, res) => {
 module.exports = {
   CreateChatConversation,
   GetConversationByUser,
-  ActiveConversation,
   MarkMessageAsRead
 };

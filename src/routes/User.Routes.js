@@ -5,5 +5,6 @@ const userController = require('../controllers/User.Controller');
 router.get('/get-all-user', userController.GetAllUser);
 router.get('/search-user', userController.SearchUser);
 router.get('/get-user', userController.GetOneUser);
+router.get('/user-conversation', userController.GetUserConversation);
 
 module.exports = router;

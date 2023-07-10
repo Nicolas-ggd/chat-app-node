@@ -13,10 +13,13 @@ const GetAllUser = async (req, res) => {
 
 const SearchUser = async (req, res) => {
     const searchValue = req.query.query;
-    console.log(searchValue);
+    const userId = req.query.userId;
 
     try {
-        const searchUsers = await User.find({ name: { $regex: searchValue, $options: "i" } })
+        const searchUsers = await User.find({
+            _id: { $ne: userId },
+            name: { $regex: searchValue, $options: "i" }
+        })
             .select("-password -refresh_token -ResetPasswordHash -verificationCode")
             .exec();
 
@@ -30,6 +33,7 @@ const SearchUser = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
 
 const GetOneUser = async (req, res) => {
     const _id = req.query.query;
@@ -46,8 +50,24 @@ const GetOneUser = async (req, res) => {
     }
 };
 
+const GetUserConversation = async (req, res) => {
+    const conversationId = req.body;
+
+    try {
+        const userConversation = await User.findOne({ conversationId })
+            .select("-password -refresh_token -ResetPasswordHash -verificationCode")
+            .exec();
+        console.log(userConversation)
+        return res.status(200).json(userConversation);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Can't get user conversation list" });
+    }
+};
+
 module.exports = {
     GetAllUser,
     SearchUser,
-    GetOneUser
+    GetOneUser,
+    GetUserConversation
 };
