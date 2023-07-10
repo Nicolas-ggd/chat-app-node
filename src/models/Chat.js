@@ -25,6 +25,10 @@ const Chat = new mongoose.Schema(
                     type: String,
                     required: true
                 },
+                seen: {
+                    type: Boolean,
+                    default: false
+                },
                 timestamps: {
                     type: Date,
                     default: Date.now
