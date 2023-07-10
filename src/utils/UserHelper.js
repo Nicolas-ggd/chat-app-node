@@ -10,6 +10,21 @@ const OnlineUserList = (user) => {
     return connectedUsers;
 };
 
+const RemoveUserOnlineList = (socketId) => {
+    const index = connectedUsers.findIndex((user) => user.socketId === socketId);
+
+    if (index !== -1) {
+        const disconnectedUser = connectedUsers[index];
+        disconnectedUser.online = false;
+        connectedUsers.splice(index, 1);
+        return disconnectedUser;
+    }
+
+    return null;
+
+};
+
 module.exports = {
-    OnlineUserList
+    OnlineUserList,
+    RemoveUserOnlineList
 };
