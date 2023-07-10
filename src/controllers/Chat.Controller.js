@@ -48,7 +48,7 @@ const GetConversationByUser = async (req, res) => {
     }
     return res.status(200).json(userConversationMessages);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     return res.status(500).json({ message: "Can't get conversation messages" });
   }
 };
@@ -61,8 +61,26 @@ const ActiveConversation = async (req, res) => {
   };
 };
 
+const MarkMessageAsRead = async (req, res) => {
+  const { messageId } = req.body;
+
+  try {
+    const messageAsRead = await Chat.findOneAndUpdate(
+      { 'message._id': messageId },
+      { $set: { 'message.$.seen': true } },
+      { new: true }
+    );
+
+    return res.status(200).json(messageAsRead);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Can't mark message as a read" });
+  }
+};
+
 module.exports = {
   CreateChatConversation,
   GetConversationByUser,
-  ActiveConversation
+  ActiveConversation,
+  MarkMessageAsRead
 };

@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("private-message", (data) => {
-        console.log(data);
         io.emit('private-message-received', data);
     });
 
