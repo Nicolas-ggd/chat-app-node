@@ -14,6 +14,7 @@ const userLogOut = require('./src/routes/Logout.Routes');
 const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
+const { OnlineUserList } = require('./src/utils/UserHelper')
 
 const app = express();
 connectDb();
@@ -44,6 +45,14 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
     console.log(`⚡: ${socket.id} user just connected!`);
+
+    socket.on("userConnected", (data) => {
+        data.online = true
+        data.socketId = socket.id
+        const users = OnlineUserList(data);
+        console.log(users, 'users is?')
+        io.emit("connectedUsers", users)
+    });
 
     socket.on("disconnect", () => {
         console.log(`${socket.id} user disconnected!`);
