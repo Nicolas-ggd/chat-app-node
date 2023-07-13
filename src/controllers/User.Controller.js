@@ -51,14 +51,14 @@ const GetOneUser = async (req, res) => {
 };
 
 const GetUserConversation = async (req, res) => {
-    const conversationId = req.body;
+    const _id = req.query._id;
 
     try {
-        const userConversation = await User.findOne({ conversationId })
+        const userConversation = await User.findById({ _id })
             .select("-password -refresh_token -ResetPasswordHash -verificationCode")
             .exec();
-        console.log(userConversation)
-        return res.status(200).json(userConversation);
+
+            return res.status(200).json(userConversation);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Can't get user conversation list" });

@@ -57,6 +57,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         const disconnectedUser = RemoveUserOnlineList(socket.id);
         if (disconnectedUser) {
+            io.emit("userDisconnected", disconnectedUser);
             console.log(`${disconnectedUser.username} (${socket.id}) disconnected!`);
         }
     });
@@ -68,6 +69,5 @@ io.on("connection", (socket) => {
     socket.on("private-message", (data) => {
         io.emit('private-message-received', data);
     });
-
 
 });
