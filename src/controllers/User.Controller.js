@@ -58,10 +58,14 @@ const GetUserConversation = async (req, res) => {
             .select("-password -refresh_token -ResetPasswordHash -verificationCode")
             .exec();
 
-            return res.status(200).json(userConversation);
+        if (!userConversation || !_id) {
+            return res.status(400).json({ message: "Can't find user conversation" });
+        }
+        return res.status(200).json(userConversation);
+
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Can't get user conversation list" });
+        return res.status(400).json({ message: "Can't get user conversation list" });
     }
 };
 
