@@ -61,7 +61,7 @@ const userAuth = async (req, res) => {
             res.json({
                 _id: authUser._id,
                 access_token: access_token,
-                username: authUser.name,
+                name: authUser.name,
                 email: authUser.email,
             });
         }

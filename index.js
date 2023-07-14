@@ -56,9 +56,10 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         const disconnectedUser = RemoveUserOnlineList(socket.id);
+        console.log(disconnectedUser, 'disconnectedUser')
         if (disconnectedUser) {
             io.emit("userDisconnected", disconnectedUser);
-            console.log(`${disconnectedUser.username} (${socket.id}) disconnected!`);
+            console.log(`${disconnectedUser.name} (${socket.id}) disconnected!`);
         }
     });
 

@@ -11,17 +11,15 @@ const OnlineUserList = (user) => {
 };
 
 const RemoveUserOnlineList = (socketId) => {
-    const index = connectedUsers.findIndex((user) => user.socketId === socketId);
+    const disconnectedUsers = connectedUsers.filter((user) => user.socketId === socketId);
 
-    if (index !== -1) {
-        const disconnectedUser = connectedUsers[index];
-        disconnectedUser.online = false;
-        connectedUsers.splice(index, 1);
-        return disconnectedUser;
+    if (disconnectedUsers.length > 0) {
+        disconnectedUsers.forEach((user) => {
+            user.online = false;
+        });
     }
 
-    return null;
-
+    return connectedUsers;
 };
 
 module.exports = {

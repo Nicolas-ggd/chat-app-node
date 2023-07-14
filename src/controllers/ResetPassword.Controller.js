@@ -134,7 +134,7 @@ const findUserWithToken = async (req, res) => {
         return res.json({
             _id: user._id,
             access_token: access_token,
-            username: user.name,
+            name: user.name,
             email: user.email,
         });
     } catch (error) {

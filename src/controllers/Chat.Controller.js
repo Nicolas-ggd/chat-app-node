@@ -2,7 +2,7 @@ const Chat = require('../models/Chat');
 
 const CreateChatConversation = async (req, res) => {
   const data = req.body.data;
-
+  console.log(data, 'data')
   try {
     const saveMessage = await Chat.create({
       participants: data.participants,
@@ -10,11 +10,12 @@ const CreateChatConversation = async (req, res) => {
         {
           sender: data.message.sender,
           recipient: data.message.recipient,
-          content: data.message.content
+          content: data.message.content,
+          readBy: data.message.readBy
         }
       ]
     });
-
+    console.log(saveMessage, 'saveMessage')
     return res.status(200).json(saveMessage);
   } catch (error) {
     console.log(error);
@@ -31,6 +32,7 @@ const GetConversationByUser = async (req, res) => {
     })
       .populate('message.sender', 'name')
       .populate('message.recipient', 'name')
+      .populate('message.readBy', 'name')
       .exec();
 
     const userConversationMessages = conversationMessages.map(conversation => {
