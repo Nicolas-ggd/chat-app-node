@@ -1,8 +1,12 @@
 const User = require('../models/User');
 
 const GetAllUser = async (req, res) => {
+    const _id = req.query._id;
+
     try {
-        const findAll = await User.find({})
+        const findAll = await User.find(
+            { online: true, _id: { $ne: _id } }
+        )
 
         return res.status(200).json(findAll);
     } catch (error) {
@@ -45,7 +49,6 @@ const GetOneUser = async (req, res) => {
 
         return res.status(200).json(user);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ message: "Can't get user list" });
     }
 };
@@ -64,7 +67,6 @@ const GetUserConversation = async (req, res) => {
         return res.status(200).json(userConversation);
 
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ message: "Can't get user conversation list" });
     }
 };

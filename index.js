@@ -47,21 +47,22 @@ io.on("connection", (socket) => {
     console.log(`⚡: ${socket.id} user just connected!`);
 
     socket.on("userConnected", (data) => {
-        data.online = true
-        data.socketId = socket.id
+        data.online = true;
+        data.socketId = socket.id;
         const users = OnlineUserList(data);
 
-        io.emit("connectedUsers", users)
+        io.emit("connectedUsers", users);
     });
 
     socket.on("disconnect", () => {
-        const disconnectedUser = RemoveUserOnlineList(socket.id);
-        console.log(disconnectedUser, 'disconnectedUser')
-        if (disconnectedUser) {
-            io.emit("userDisconnected", disconnectedUser);
-            console.log(`${disconnectedUser.name} (${socket.id}) disconnected!`);
+        const disconnectedUsers = RemoveUserOnlineList(socket.id);
+        console.log(disconnectedUsers, 'disconnectedUsers')
+        if (disconnectedUsers.length > 0) {
+            io.emit("userDisconnected", disconnectedUsers);
+            console.log(`${disconnectedUsers[0].name} (${socket.id}) disconnected!`);
         }
     });
+
 
     socket.on('startConversation', (data) => {
         socket.join(data);

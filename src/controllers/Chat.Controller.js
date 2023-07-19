@@ -2,7 +2,7 @@ const Chat = require('../models/Chat');
 
 const CreateChatConversation = async (req, res) => {
   const data = req.body.data;
-  console.log(data, 'data')
+
   try {
     const saveMessage = await Chat.create({
       participants: data.participants,
@@ -10,12 +10,11 @@ const CreateChatConversation = async (req, res) => {
         {
           sender: data.message.sender,
           recipient: data.message.recipient,
-          content: data.message.content,
-          readBy: data.message.readBy
+          content: data.message.content
         }
       ]
     });
-    console.log(saveMessage, 'saveMessage')
+
     return res.status(200).json(saveMessage);
   } catch (error) {
     console.log(error);
@@ -32,7 +31,6 @@ const GetConversationByUser = async (req, res) => {
     })
       .populate('message.sender', 'name')
       .populate('message.recipient', 'name')
-      .populate('message.readBy', 'name')
       .exec();
 
     const userConversationMessages = conversationMessages.map(conversation => {
@@ -50,7 +48,6 @@ const GetConversationByUser = async (req, res) => {
     }
     return res.status(200).json(userConversationMessages);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Can't get conversation messages" });
   }
 };

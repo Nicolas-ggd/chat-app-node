@@ -4,7 +4,7 @@ const verificationHelper = require('../utils/VerificationHelper');
 
 const userAuth = async (req, res) => {
     const { email, password, verificationCode } = req.body;
-
+    console.log(req.body)
     try {
         if (!email || !password) {
             return res.status(400).json({ message: "Email and password are required" });
@@ -66,6 +66,7 @@ const userAuth = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json(error)
     }
 };
