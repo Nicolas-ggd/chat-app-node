@@ -23,11 +23,15 @@ const CreateChatConversation = async (req, res) => {
 };
 
 const GetConversationByUser = async (req, res) => {
-  const userId = req.query.query;
+  const userId = req.query.userId;
+  const receiver = req.query.receiver;
 
   try {
     const conversationMessages = await Chat.find({
-      participants: userId
+      $and: [
+        { 'participants': userId },
+        { 'participants': receiver },
+      ]
     })
       .populate('message.sender', 'name')
       .populate('message.recipient', 'name')

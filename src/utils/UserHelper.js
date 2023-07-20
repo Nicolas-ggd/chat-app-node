@@ -6,7 +6,7 @@ const OnlineUserList = (user) => {
     if (!existingUser) {
         connectedUsers.push(user);
     }
-    console.log(connectedUsers, 'connectedUsers')
+
     return connectedUsers;
 };
 

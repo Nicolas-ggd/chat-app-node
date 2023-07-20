@@ -56,20 +56,26 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         const disconnectedUsers = RemoveUserOnlineList(socket.id);
-        console.log(disconnectedUsers, 'disconnectedUsers')
+        const rooms = Object.keys(socket.rooms);
+        rooms.forEach((room) => {
+            socket.leave(room);
+        });
         if (disconnectedUsers.length > 0) {
             io.emit("userDisconnected", disconnectedUsers);
-            console.log(`${disconnectedUsers[0].name} (${socket.id}) disconnected!`);
         }
     });
 
+    socket.on('join-room', (roomName) => {
+        console.log(roomName)
+        socket.join(roomName);
+    });
 
     socket.on('startConversation', (data) => {
         socket.join(data);
     });
 
-    socket.on("private-message", (data) => {
-        io.emit('private-message-received', data);
+    socket.on('private-message', ({ room, data }) => {
+        io.to(room).emit('private-message-received', data);
     });
 
 });
