@@ -19,10 +19,14 @@ const Chat = new mongoose.Schema(
                 recipient: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'User',
-                    required: true
+                    required: false
                 },
                 content: {
                     type: String,
+                    required: true
+                },
+                private: {
+                    type: Boolean,
                     required: true
                 },
                 seen: {

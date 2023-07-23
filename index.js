@@ -65,13 +65,12 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on('join-room', (roomName) => {
-        console.log(roomName)
-        socket.join(roomName);
-    });
-
-    socket.on('startConversation', (data) => {
-        socket.join(data);
+    socket.on("createRoom", (roomId) => {
+        const linkParts = roomId.split("/");
+        const room = linkParts[linkParts.length - 1];
+        console.log(room, 'roomId')
+        socket.join(room);
+        return room;
     });
 
     socket.on('private-message', ({ room, data }) => {

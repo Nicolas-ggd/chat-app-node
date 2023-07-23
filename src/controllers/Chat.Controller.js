@@ -14,7 +14,7 @@ const CreateChatConversation = async (req, res) => {
         }
       ]
     });
-
+    console.log(saveMessage)
     return res.status(200).json(saveMessage);
   } catch (error) {
     console.log(error);
@@ -37,7 +37,7 @@ const GetConversationByUser = async (req, res) => {
       .populate('message.recipient', 'name')
       .exec();
 
-    const userConversationMessages = conversationMessages.map(conversation => {
+      const userConversationMessages = conversationMessages.map(conversation => {
       const filteredMessages = conversation.message.filter(message => {
         return (
           message.sender._id.toString() === userId ||
@@ -52,6 +52,7 @@ const GetConversationByUser = async (req, res) => {
     }
     return res.status(200).json(userConversationMessages);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ message: "Can't get conversation messages" });
   }
 };
