@@ -9,7 +9,11 @@ const Chat = new mongoose.Schema(
                 required: true
             }
         ],
-        message: [
+        isPublic: {
+            type: Boolean,
+            default: false
+        },
+        messages: [
             {
                 sender: {
                     type: mongoose.Schema.Types.ObjectId,
@@ -19,21 +23,17 @@ const Chat = new mongoose.Schema(
                 recipient: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'User',
-                    required: false
+                    required: false,
                 },
                 content: {
                     type: String,
-                    required: true
-                },
-                private: {
-                    type: Boolean,
                     required: true
                 },
                 seen: {
                     type: Boolean,
                     default: false
                 },
-                timestamps: {
+                timestamp: {
                     type: Date,
                     default: Date.now
                 }

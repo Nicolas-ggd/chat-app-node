@@ -6,10 +6,11 @@ const CreateChatConversation = async (req, res) => {
   try {
     const saveMessage = await Chat.create({
       participants: data.participants,
-      message: [
+      messages: [
         {
           sender: data.message.sender,
           recipient: data.message.recipient,
+          // messageType: data.message.messageType,
           content: data.message.content
         }
       ]
