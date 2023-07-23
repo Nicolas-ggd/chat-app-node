@@ -1,10 +1,9 @@
-const socketio = require('socket.io');
 const { OnlineUserList, RemoveUserOnlineList } = require('../utils/UserHelper');
 
 const configureSocket = (server) => {
-    const io = socketio(server);
+    const io = server
 
-    io.on('connection', (socket) => {
+    io.on("connection", (socket) => {
         console.log(`⚡: ${socket.id} user just connected!`);
 
         socket.on("userConnected", (data) => {
