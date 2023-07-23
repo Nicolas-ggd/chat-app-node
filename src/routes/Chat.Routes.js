@@ -5,5 +5,6 @@ const chatController = require('../controllers/Chat.Controller');
 router.post('/create-conversation', chatController.CreateChatConversation);
 router.get('/get-conversation', chatController.GetConversationByUser);
 router.post('/mark-as-read', chatController.MarkMessageAsRead);
+router.get('/get-public-conversation', chatController.GetConversationByRoom)
 
 module.exports = router;

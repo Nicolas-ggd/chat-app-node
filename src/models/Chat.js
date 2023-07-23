@@ -25,6 +25,10 @@ const Chat = new mongoose.Schema(
                     ref: 'User',
                     required: false,
                 },
+                room: {
+                    type: String,
+                    required: false,
+                },
                 content: {
                     type: String,
                     required: true
