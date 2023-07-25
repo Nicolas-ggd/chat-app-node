@@ -1,30 +1,55 @@
 const Chat = require('../models/Chat');
 
-// const CreatePublicChatConversation = async (req, res) => {
-//   const data = req.body;
+const CreateChatConversation = async (req, res) => {
+  console.log(1)
+  const chatData = req.body;
+  const roomId = chatData.messages.room
 
-//   try {
-//     const saveMessage = await Chat.create({
-//       participants: data.participants,
-//       messages: [
-//         {
-//           sender: data.messages.sender,
-//           room: data.messages.room,
-//           content: data.messages.content
-//         }
-//       ]
-//     });
+  try {
 
-//     return res.status(200).json(saveMessage);
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ message: "Can't send message" });
-//   }
-// };
+    const existConversation = await Chat.find({ "messages.room": roomId })
+
+    const newMessage = {
+      sender: chatData.messages.sender,
+      content: chatData.messages.content,
+      room: chatData.messages.room
+    }
+
+    if (existConversation.length > 0) {
+      const conversation = existConversation[0];
+      conversation.messages.push(newMessage);
+      await conversation.save();
+
+      return res.status(200).json(conversation)
+    } else {
+      const conversation = await Chat.create({
+        participants: chatData.participants,
+        messages: [newMessage]
+      });
+      return res.status(200).json(conversation)
+
+    }
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Can't create chat conversation, try again" });
+  }
+};
 
 const GetPublicConversation = async (req, res) => {
   const roomId = req.query.roomId;
 
+  try {
+    const conversation = await Chat.find(
+      { 'messages.room': roomId }
+    )
+      .populate('messages.sender', 'name')
+
+    return res.status(200).json(conversation);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Can't get conversation" });
+  }
 };
 
 const GetConversationByUser = async (req, res) => {
@@ -80,7 +105,7 @@ const MarkMessageAsRead = async (req, res) => {
 };
 
 module.exports = {
-  // CreatePublicChatConversation,
+  CreateChatConversation,
   GetConversationByUser,
   MarkMessageAsRead,
   GetPublicConversation
