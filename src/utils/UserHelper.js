@@ -1,4 +1,5 @@
 const connectedUsers = [];
+const userInRoom = [];
 
 const OnlineUserList = (user) => {
     const existingUser = connectedUsers.find((u) => u._id === user._id);
@@ -22,7 +23,18 @@ const RemoveUserOnlineList = (socketId) => {
     return connectedUsers;
 };
 
+const userInRoomList = (user) => {
+    const existingUser = userInRoom.find((u) => u._id === user._id);
+
+    if (!existingUser) {
+        userInRoom.push(user)
+    }
+
+    return existingUser
+};
+
 module.exports = {
     OnlineUserList,
-    RemoveUserOnlineList
+    RemoveUserOnlineList,
+    userInRoomList
 };

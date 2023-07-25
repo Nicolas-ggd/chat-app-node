@@ -16,7 +16,7 @@ const GetAllUser = async (req, res) => {
 };
 
 const SearchUser = async (req, res) => {
-    const searchValue = req.query.query;
+    const searchValue = req.query.value;
     const userId = req.query.userId;
 
     try {

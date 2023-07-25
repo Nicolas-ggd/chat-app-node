@@ -1,27 +1,30 @@
 const Chat = require('../models/Chat');
 
-const CreateChatConversation = async (req, res) => {
-  const data = req.body;
+// const CreatePublicChatConversation = async (req, res) => {
+//   const data = req.body;
 
-  try {
-    const saveMessage = await Chat.create({
-      participants: data.participants,
-      messages: [
-        {
-          sender: data.messages.sender,
-          recipient: data.messages.recipient,
-          room: data.messages.room,
-          // messageType: data.message.messageType,
-          content: data.messages.content
-        }
-      ]
-    });
-    console.log(saveMessage)
-    return res.status(200).json(saveMessage);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Can't send message" });
-  }
+//   try {
+//     const saveMessage = await Chat.create({
+//       participants: data.participants,
+//       messages: [
+//         {
+//           sender: data.messages.sender,
+//           room: data.messages.room,
+//           content: data.messages.content
+//         }
+//       ]
+//     });
+
+//     return res.status(200).json(saveMessage);
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: "Can't send message" });
+//   }
+// };
+
+const GetPublicConversation = async (req, res) => {
+  const roomId = req.query.roomId;
+
 };
 
 const GetConversationByUser = async (req, res) => {
@@ -59,37 +62,6 @@ const GetConversationByUser = async (req, res) => {
   }
 };
 
-const GetConversationByRoom = async (req, res) => {
-  const roomId = req.query.roomId;
-
-  try {
-    const conversationMessages = await Chat.find(
-      { room: roomId }
-    )
-      .populate('message.sender', 'name')
-      .populate('message.recipient', 'name')
-      .exec();
-
-    // const userConversationMessages = conversationMessages.map(conversation => {
-    //   const filteredMessages = conversation.message.filter(message => {
-    //     return (
-    //       message.sender._id.toString() === userId ||
-    //       message.recipient._id.toString() === userId
-    //     );
-    //   });
-    //   return { ...conversation.toObject(), message: filteredMessages };
-    // });
-
-    if (conversationMessages.length === 0) {
-      return res.status(404).json({ message: "User conversation not found" });
-    }
-    return res.status(200).json(conversationMessages);
-  } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: "Can't get conversation messages" });
-  }
-};
-
 const MarkMessageAsRead = async (req, res) => {
   const { messageId } = req.body;
 
@@ -108,8 +80,8 @@ const MarkMessageAsRead = async (req, res) => {
 };
 
 module.exports = {
-  CreateChatConversation,
+  // CreatePublicChatConversation,
   GetConversationByUser,
   MarkMessageAsRead,
-  GetConversationByRoom
+  GetPublicConversation
 };
