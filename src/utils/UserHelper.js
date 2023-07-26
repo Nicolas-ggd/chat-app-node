@@ -1,5 +1,6 @@
 const connectedUsers = [];
 const roomData = {};
+let userInRoom = [];
 
 const OnlineUserList = (user) => {
     const existingUser = connectedUsers.find((u) => u._id === user._id);
@@ -23,24 +24,43 @@ const RemoveUserOnlineList = (socketId) => {
     return connectedUsers;
 };
 
-const userInRoomList = (roomId, user) => {
+const userInRoomList = (roomId, userData) => {
 
-    // if (!roomData[roomId]) {
-    //     roomData[roomId] = [];
-    // }
+    if (!roomData.hasOwnProperty(roomId)) {
+        roomData[roomId] = [];
+    }
 
-    // const userIndex = roomData[roomId].findIndex((existingUser) => existingUser.userId === user.userId);
+    const isUserAlreadyAdded = roomData[roomId].some((user) => user.userId === userData.userId);
 
-    // if (userIndex === -1) {
-    //     roomData[roomId].push(user);
-    // }
+    if (!isUserAlreadyAdded) {
+        roomData[roomId].push(userData);
+    }
 
+    return roomData
+};
 
-    // return roomData;
+const roomOfUsers = () => {
+    return roomData;
+}
+
+const findMembersRoom = (roomId) => {
+    const roomMembers = roomOfUsers();
+
+    if (roomMembers.hasOwnProperty(roomId)) {
+        const targetRoom = roomMembers[roomId];
+        userInRoom = targetRoom;
+        console.log(targetRoom, 'Target Room');
+    } else {
+        console.log(`Room with ID ${roomId} not found.`);
+    }
+
+    return userInRoom;
 };
 
 module.exports = {
     OnlineUserList,
     RemoveUserOnlineList,
-    userInRoomList
+    userInRoomList,
+    roomOfUsers,
+    findMembersRoom
 };
