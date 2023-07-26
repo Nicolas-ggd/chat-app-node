@@ -18,15 +18,17 @@ const CreateChatConversation = async (req, res) => {
       const conversation = existConversation[0];
       conversation.messages.push(newMessage);
       await conversation.save();
-
-      return res.status(200).json(conversation)
+    
+      // Return only the new message object
+      return res.status(200).json(newMessage);
     } else {
-      const conversation = await Chat.create({
+      await Chat.create({
         participants: chatData.participants,
         messages: [newMessage]
       });
-      return res.status(200).json(conversation)
-
+    
+      // Return only the new message object
+      return res.status(200).json(newMessage);
     }
 
   } catch (error) {

@@ -69,4 +69,11 @@ io.on("connection", (socket) => {
         socket.join(roomId);
         io.to(roomId).emit("userJoin", userData);
     });
+
+    socket.on("new-message", (data) => {
+        console.log(data)
+        const roomId = data.room;
+
+        io.to(roomId).emit("new-message-received", data);
+    });
 });
