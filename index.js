@@ -14,7 +14,7 @@ const userLogOut = require('./src/routes/Logout.Routes');
 const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
-const configureSocket = require('./src/sockets/socket');
+const { OnlineUserList, RemoveUserOnlineList } = require('./src/utils/UserHelper');
 
 const app = express();
 connectDb();
@@ -43,4 +43,30 @@ const io = new Server(server, {
     },
 })
 
-configureSocket(io);
+io.on("connection", (socket) => {
+    console.log(`⚡: ${socket.id} user just connected!`);
+
+    socket.on("userConnected", (data) => {
+        data.online = true;
+        data.socketId = socket.id;
+        const users = OnlineUserList(data);
+
+        io.emit("connectedUsers", users);
+    });
+
+    socket.on("disconnect", () => {
+        const disconnectedUsers = RemoveUserOnlineList(socket.id);
+        const rooms = Object.keys(socket.rooms);
+        rooms.forEach((room) => {
+            socket.leave(room);
+        });
+        if (disconnectedUsers.length > 0) {
+            io.emit("userDisconnected", disconnectedUsers);
+        }
+    });
+
+    socket.on("joinRoom", ({ roomId, userData }) => {
+        socket.join(roomId);
+        io.to(roomId).emit("userJoin", userData);
+    });
+});

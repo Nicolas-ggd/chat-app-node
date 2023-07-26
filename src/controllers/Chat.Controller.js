@@ -1,7 +1,6 @@
 const Chat = require('../models/Chat');
 
 const CreateChatConversation = async (req, res) => {
-  console.log(1)
   const chatData = req.body;
   const roomId = chatData.messages.room
 

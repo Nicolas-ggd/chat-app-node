@@ -25,18 +25,18 @@ const RemoveUserOnlineList = (socketId) => {
 
 const userInRoomList = (roomId, user) => {
 
-    if (!roomData[roomId]) {
-        roomData[roomId] = [];
-    }
+    // if (!roomData[roomId]) {
+    //     roomData[roomId] = [];
+    // }
 
-    const userIndex = roomData[roomId].findIndex((existingUser) => existingUser.userId === user.userId);
+    // const userIndex = roomData[roomId].findIndex((existingUser) => existingUser.userId === user.userId);
 
-    if (userIndex === -1) {
-        roomData[roomId].push(user);
-    }
+    // if (userIndex === -1) {
+    //     roomData[roomId].push(user);
+    // }
 
 
-    return roomData;
+    // return roomData;
 };
 
 module.exports = {
