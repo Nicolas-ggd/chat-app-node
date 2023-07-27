@@ -45,6 +45,7 @@ const GetPublicConversation = async (req, res) => {
       { 'messages.room': roomId }
     )
       .populate('messages.sender', 'name')
+      .populate('participants', 'name')
 
     return res.status(200).json(conversation);
   } catch (error) {

@@ -15,6 +15,7 @@ const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
 const { OnlineUserList, RemoveUserOnlineList, userInRoomList, findMembersRoom } = require('./src/utils/UserHelper');
+const { userInRoom } = require('./src/utils/UserFunctionHelper');
 
 const app = express();
 connectDb();
@@ -73,8 +74,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on("new-message", (data) => {
-        console.log(data)
         const roomId = data.room;
+        const userId = data.sender;
+        userInRoom(roomId, userId);
 
         io.to(roomId).emit("new-message-received", data);
     });

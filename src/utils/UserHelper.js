@@ -49,7 +49,6 @@ const findMembersRoom = (roomId) => {
     if (roomMembers.hasOwnProperty(roomId)) {
         const targetRoom = roomMembers[roomId];
         userInRoom = targetRoom;
-        console.log(targetRoom, 'Target Room');
     } else {
         console.log(`Room with ID ${roomId} not found.`);
     }
