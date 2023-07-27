@@ -2,16 +2,17 @@ const Chat = require('../models/Chat');
 
 const CreateChatConversation = async (req, res) => {
   const chatData = req.body;
-  const roomId = chatData.messages.room
+  const roomId = chatData.messages.room;
 
   try {
-    const existConversation = await Chat.find({ "messages.room": roomId })
+    const existConversation = await Chat.find({ "messages.room": roomId });
 
     const newMessage = {
       sender: chatData.messages.sender,
       content: chatData.messages.content,
-      room: chatData.messages.room
-    }
+      room: chatData.messages.room,
+      createdBy: chatData.createdBy
+    };
 
     if (existConversation.length > 0) {
       const conversation = existConversation[0];
@@ -22,9 +23,10 @@ const CreateChatConversation = async (req, res) => {
     } else {
       await Chat.create({
         participants: chatData.participants,
+        createdBy: chatData.participants[0],
         messages: [newMessage]
       });
-    
+
       return res.status(200).json(newMessage);
     }
 
