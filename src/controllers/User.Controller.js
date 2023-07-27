@@ -22,7 +22,9 @@ const SearchUser = async (req, res) => {
     try {
         const searchUsers = await User.find({
             _id: { $ne: userId },
-            name: { $regex: searchValue, $options: "i" }
+            name: {
+                $regex: new RegExp(`^${searchValue}$`, "i")
+            }
         })
             .select("-password -refresh_token -ResetPasswordHash -verificationCode")
             .exec();
@@ -37,7 +39,6 @@ const SearchUser = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
-
 
 const GetOneUser = async (req, res) => {
     const _id = req.query.query;
