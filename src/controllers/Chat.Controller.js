@@ -5,7 +5,6 @@ const CreateChatConversation = async (req, res) => {
   const roomId = chatData.messages.room
 
   try {
-
     const existConversation = await Chat.find({ "messages.room": roomId })
 
     const newMessage = {
@@ -18,8 +17,7 @@ const CreateChatConversation = async (req, res) => {
       const conversation = existConversation[0];
       conversation.messages.push(newMessage);
       await conversation.save();
-    
-      // Return only the new message object
+
       return res.status(200).json(newMessage);
     } else {
       await Chat.create({
@@ -27,7 +25,6 @@ const CreateChatConversation = async (req, res) => {
         messages: [newMessage]
       });
     
-      // Return only the new message object
       return res.status(200).json(newMessage);
     }
 
@@ -51,6 +48,23 @@ const GetPublicConversation = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Can't get conversation" });
+  }
+};
+
+const GetUserAllConversation = async (req, res) => {
+  const userId = req.query.userId;
+
+  try {
+    const userConversations = await Chat.find({ "participants": userId });
+
+    const selectedRooms = userConversations.map(conversation => {
+      return conversation.messages[0].room;
+    });
+
+    return res.status(200).json(selectedRooms);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Can't get user conversation" });
   }
 };
 
@@ -110,5 +124,6 @@ module.exports = {
   CreateChatConversation,
   GetConversationByUser,
   MarkMessageAsRead,
-  GetPublicConversation
+  GetPublicConversation,
+  GetUserAllConversation
 };
