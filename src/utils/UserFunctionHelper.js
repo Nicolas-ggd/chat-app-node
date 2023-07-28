@@ -1,4 +1,5 @@
 const Chat = require('../models/Chat');
+let userConversation = [];
 
 const userInRoom = async (roomId, userId) => {
     try {
@@ -13,6 +14,27 @@ const userInRoom = async (roomId, userId) => {
     }
 };
 
+const newConversation = async (userId) => {
+    try {
+        const conversation = await Chat.find({ "messages.recipient": userId })
+
+        const findConv = conversation.map((conv) => {
+            return conv.messages[0].room
+        });
+        userConversation = findConv;
+        return userConversation;
+    } catch (err) {
+        console.log(err)
+        throw err;
+    }
+};
+
+const newUserConversation = async () => {
+    return userConversation;
+};
+
 module.exports = {
-    userInRoom
+    userInRoom,
+    newConversation,
+    newUserConversation
 };

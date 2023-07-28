@@ -14,6 +14,7 @@ const CreateChatConversation = async (req, res) => {
         content: chatData.messages.content,
         room: chatData.messages.room,
         createdBy: chatData.createdBy,
+        timestamp: chatData.messages.timestamp
       };
     } else {
       newMessage = {
@@ -22,6 +23,7 @@ const CreateChatConversation = async (req, res) => {
         room: chatData.messages.room,
         createdBy: chatData.createdBy,
         recipient: chatData.messages.recipient,
+        timestamp: chatData.messages.timestamp
       };
     }
 
@@ -55,6 +57,7 @@ const GetPublicConversation = async (req, res) => {
       { 'messages.room': roomId }
     )
       .populate('messages.sender', 'name')
+      .populate('messages.recipient', 'name')
       .populate('participants', 'name')
 
     return res.status(200).json(conversation);
