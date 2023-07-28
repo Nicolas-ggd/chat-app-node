@@ -7,12 +7,23 @@ const CreateChatConversation = async (req, res) => {
   try {
     const existConversation = await Chat.find({ "messages.room": roomId });
 
-    const newMessage = {
-      sender: chatData.messages.sender,
-      content: chatData.messages.content,
-      room: chatData.messages.room,
-      createdBy: chatData.createdBy
-    };
+    let newMessage;
+    if (chatData.isPublic) {
+      newMessage = {
+        sender: chatData.messages.sender,
+        content: chatData.messages.content,
+        room: chatData.messages.room,
+        createdBy: chatData.createdBy,
+      };
+    } else {
+      newMessage = {
+        sender: chatData.messages.sender,
+        content: chatData.messages.content,
+        room: chatData.messages.room,
+        createdBy: chatData.createdBy,
+        recipient: chatData.messages.recipient,
+      };
+    }
 
     if (existConversation.length > 0) {
       const conversation = existConversation[0];
