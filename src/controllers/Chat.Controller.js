@@ -3,39 +3,51 @@ const Chat = require('../models/Chat');
 const CreateConversation = async (req, res) => {
   const convData = req.body;
   const roomId = convData.room;
-
+  // const messages = convData.messages;
   try {
-    const existConv = await Chat.findOne({ "room": roomId });
+    const existConv = await Chat.find({ "room": roomId });
 
     let newMessages;
+    console.log(convData.isPublic, 'public')
     if (convData.isPublic) {
       newMessages = {
-        sender: convData.createdBy,
-        content: convData.messages.content,
-        timestamp: convData.messages.timestamp,
-        seen: convData.messages.seen
+        room: convData.room,
+        createdBy: convData.createdBy,
+        messages: [{
+          sender: convData.messages.sender,
+          content: convData.messages.content,
+          timestamp: convData.messages.timestamp,
+          seen: convData.messages.seen
+        }]
       }
     } else {
       newMessages = {
-        sender: convData.createdBy,
-        recipient: convData.messages.recipient,
-        content: convData.messages.content,
-        timestamp: convData.messages.timestamp,
-        seen: convData.messages.seen
+        room: convData.room,
+        createdBy: convData.createdBy,
+        messages: [{
+          sender: convData.messages.sender,
+          content: convData.messages.content,
+          recipient: convData.messages.recipient,
+          timestamp: convData.messages.timestamp,
+          seen: convData.messages.seen
+        }]
       };
     }
 
-    if (existConv) {
-      existConv.messages.push(newMessages);
-      await existConv.save();
+    console.log(newMessages, 'newMessages')
 
+    if (existConv.length > 0) {
+      const conversation = existConv[0];
+      conversation.messages.push(newMessages.messages[0]);
+      await conversation.save();
+
+      console.log(newMessages, 'conversation')
       return res.status(200).json(newMessages);
     } else {
       const newConv = await Chat.create({
-        room: convData.room,
         participants: convData.participants,
         createdBy: convData.participants[0],
-        messages: [newMessages]
+        messages: [newMessages.messages[0]]
       });
 
       return res.status(200).json(newConv);
@@ -46,7 +58,6 @@ const CreateConversation = async (req, res) => {
     return res.status(500).json({ message: "Can't create conversation" })
   }
 };
-
 
 const GetConversationMessages = async (req, res) => {
   const roomId = req.query.roomId;
