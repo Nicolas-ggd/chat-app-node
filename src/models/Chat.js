@@ -18,6 +18,10 @@ const Chat = new mongoose.Schema(
             ref: 'User',
             required: false
         },
+        room: {
+            type: String,
+            required: false,
+        },
         messages: [
             {
                 sender: {
@@ -28,10 +32,6 @@ const Chat = new mongoose.Schema(
                 recipient: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'User',
-                    required: false,
-                },
-                room: {
-                    type: String,
                     required: false,
                 },
                 content: {

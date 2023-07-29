@@ -1,145 +1,74 @@
 const Chat = require('../models/Chat');
 
-const CreateChatConversation = async (req, res) => {
-  const chatData = req.body;
-  const roomId = chatData.messages.room;
+const CreateConversation = async (req, res) => {
+  const convData = req.body;
+  const roomId = convData.room;
 
   try {
-    const existConversation = await Chat.find({ "messages.room": roomId });
+    const existConv = await Chat.find({ "room": roomId });
 
-    let newMessage;
-    if (chatData.isPublic) {
-      newMessage = {
-        sender: chatData.messages.sender,
-        content: chatData.messages.content,
-        room: chatData.messages.room,
-        createdBy: chatData.createdBy,
-        timestamp: chatData.messages.timestamp
-      };
-    } else {
-      newMessage = {
-        sender: chatData.messages.sender,
-        content: chatData.messages.content,
-        room: chatData.messages.room,
-        createdBy: chatData.createdBy,
-        recipient: chatData.messages.recipient,
-        timestamp: chatData.messages.timestamp
-      };
+    let newMessages;
+    newMessages = {
+      sender: convData.messages.sender,
+      recipient: convData.messages.recipient,
+      content: convData.messages.content,
+      seen: convData.messages.seen,
+      timestamp: convData.messages.timestamp,
+      room: convData.room
     }
 
-    if (existConversation.length > 0) {
-      const conversation = existConversation[0];
-      conversation.messages.push(newMessage);
+    if (existConv.length > 0) {
+      const conversation = existConv[0];
+      conversation.messages.push(newMessages);
       await conversation.save();
-
-      return res.status(200).json(newMessage);
+      console.log(newMessages, 'conversation')
+      return res.status(200).json(newMessages);
     } else {
-      await Chat.create({
-        participants: chatData.participants,
-        createdBy: chatData.participants[0],
-        messages: [newMessage]
-      });
+      const newConv = await Chat.create(convData);
 
-      return res.status(200).json(newMessage);
+      return res.status(200).json(newConv);
     }
 
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Can't create chat conversation, try again" });
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ message: "Can't create conversation" })
   }
 };
 
-const GetPublicConversation = async (req, res) => {
+const GetConversationMessages = async (req, res) => {
   const roomId = req.query.roomId;
 
   try {
-    const conversation = await Chat.find(
-      { 'messages.room': roomId }
-    )
+    const convMessages = await Chat.findOne({ "room": roomId })
+      .populate('createdBy', 'name')
       .populate('messages.sender', 'name')
       .populate('messages.recipient', 'name')
-      .populate('participants', 'name')
+      .exec()
 
-    return res.status(200).json(conversation);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Can't get conversation" });
-  }
-};
-
-const GetUserAllConversation = async (req, res) => {
-  const userId = req.query.userId;
-
-  try {
-    const userConversations = await Chat.find({ "participants": userId });
-
-    const selectedRooms = userConversations.map(conversation => {
-      return conversation.messages[0].room;
-    });
-
-    return res.status(200).json(selectedRooms);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Can't get user conversation" });
-  }
-};
-
-const GetConversationByUser = async (req, res) => {
-  const userId = req.query.userId;
-  const receiver = req.query.receiver;
-
-  try {
-    const conversationMessages = await Chat.find({
-      $and: [
-        { 'participants': userId },
-        { 'participants': receiver },
-      ]
-    })
-      .populate('message.sender', 'name')
-      .populate('message.recipient', 'name')
-      .exec();
-
-    const userConversationMessages = conversationMessages.map(conversation => {
-      const filteredMessages = conversation.message.filter(message => {
-        return (
-          message.sender._id.toString() === userId ||
-          message.recipient._id.toString() === userId
-        );
-      });
-      return { ...conversation.toObject(), message: filteredMessages };
-    });
-
-    if (userConversationMessages.length === 0) {
-      return res.status(404).json({ message: "User conversation not found" });
-    }
-    return res.status(200).json(userConversationMessages);
-  } catch (error) {
-    console.log(error)
+    return res.status(200).json(convMessages);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Can't get conversation messages" });
   }
 };
 
-const MarkMessageAsRead = async (req, res) => {
-  const { messageId } = req.body;
+const GetUserConversation = async (req, res) => {
+  const userId = req.query.userId;
 
   try {
-    const messageAsRead = await Chat.findOneAndUpdate(
-      { 'message._id': messageId },
-      { $set: { 'message.$.seen': true } },
-      { new: true }
-    );
+    const userConv = await Chat.find({ "participants": userId });
 
-    return res.status(200).json(messageAsRead);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Can't mark message as a read" });
+    res.status(200).json(userConv);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Can't get user conversation" })
   }
 };
 
 module.exports = {
-  CreateChatConversation,
-  GetConversationByUser,
-  MarkMessageAsRead,
-  GetPublicConversation,
-  GetUserAllConversation
+  CreateConversation,
+  GetUserConversation,
+  GetConversationMessages
+  // GetPublicConversation,
+  // GetUserAllConversation
 };

@@ -15,7 +15,7 @@ const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
 const { OnlineUserList, RemoveUserOnlineList, userInRoomList, findMembersRoom } = require('./src/utils/UserHelper');
-const { userInRoom, newConversation, newUserConversation } = require('./src/utils/UserFunctionHelper');
+const { userInRoom, newConversation, newUserConversation, conversationMembers, roomConvMembers } = require('./src/utils/UserFunctionHelper');
 
 const app = express();
 connectDb();
@@ -73,21 +73,7 @@ io.on("connection", (socket) => {
         io.to(roomId).emit("userJoin", userData);
     });
 
-    socket.on("new-message", async (data) => {
-        const roomId = data.room;
-        const userId = data.sender;
-        userInRoom(roomId, userId);
-
-        await newConversation(data.recipient);
-        let userConversation = await newUserConversation()
-        
-        io.to(data.recipient).emit("new-conversation", userConversation);
-        io.to(roomId).emit("new-message-received", data);
-    });
-
-    socket.on("group-members", (data) => {
-        const roomMembers = findMembersRoom(data);
-
-        io.to(data).emit("group-member-list", roomMembers);
+    socket.on("new-messages", (data) => {
+        io.to(data.room).emit("new-messages-received", data);
     });
 });
