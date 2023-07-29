@@ -5,26 +5,38 @@ const CreateConversation = async (req, res) => {
   const roomId = convData.room;
 
   try {
-    const existConv = await Chat.find({ "room": roomId });
+    const existConv = await Chat.findOne({ "room": roomId });
 
     let newMessages;
-    newMessages = {
-      sender: convData.messages.sender,
-      recipient: convData.messages.recipient,
-      content: convData.messages.content,
-      seen: convData.messages.seen,
-      timestamp: convData.messages.timestamp,
-      room: convData.room
+    if (convData.isPublic) {
+      newMessages = {
+        sender: convData.createdBy,
+        content: convData.messages.content,
+        timestamp: convData.messages.timestamp,
+        seen: convData.messages.seen
+      }
+    } else {
+      newMessages = {
+        sender: convData.createdBy,
+        recipient: convData.messages.recipient,
+        content: convData.messages.content,
+        timestamp: convData.messages.timestamp,
+        seen: convData.messages.seen
+      };
     }
 
-    if (existConv.length > 0) {
-      const conversation = existConv[0];
-      conversation.messages.push(newMessages);
-      await conversation.save();
-      console.log(newMessages, 'conversation')
+    if (existConv) {
+      existConv.messages.push(newMessages);
+      await existConv.save();
+
       return res.status(200).json(newMessages);
     } else {
-      const newConv = await Chat.create(convData);
+      const newConv = await Chat.create({
+        room: convData.room,
+        participants: convData.participants,
+        createdBy: convData.participants[0],
+        messages: [newMessages]
+      });
 
       return res.status(200).json(newConv);
     }
@@ -34,6 +46,7 @@ const CreateConversation = async (req, res) => {
     return res.status(500).json({ message: "Can't create conversation" })
   }
 };
+
 
 const GetConversationMessages = async (req, res) => {
   const roomId = req.query.roomId;
