@@ -32,7 +32,7 @@ const CreateConversation = async (req, res) => {
         }]
       };
     }
-    console.log(newMessages.messages[0].sender, 'sender boz')
+
     if (existConv.length > 0) {
       const conversation = existConv[0];
       conversation.messages.push(newMessages.messages[0]);
@@ -40,7 +40,6 @@ const CreateConversation = async (req, res) => {
 
       return res.status(200).json(newMessages);
     } else {
-      console.log(newMessages.messages[0].sender, 'conversation else ')
       await Chat.create({
         participants: convData.participants,
         createdBy: convData.participants[0],
@@ -87,8 +86,33 @@ const GetUserConversation = async (req, res) => {
   }
 };
 
+const GetConversationMembers = async (req, res) => {
+  const roomId = req.query.roomId;
+
+  try {
+    const convMembers = await Chat.findOne({ "room": roomId })
+      .populate('participants', 'name')
+      .exec();
+
+    if (!convMembers) {
+      return res.status(400).json({ message: "Conversation members not found" });
+    }
+
+    const recipients = {
+      createdBy: convMembers.createdBy,
+      participants: convMembers.participants
+    };
+
+    return res.status(200).json(recipients);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Can't get conversation members" })
+  }
+};
+
 module.exports = {
   CreateConversation,
   GetUserConversation,
-  GetConversationMessages
+  GetConversationMessages,
+  GetConversationMembers
 };

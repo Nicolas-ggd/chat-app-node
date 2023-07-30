@@ -74,8 +74,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("new-messages", (data) => {
-        console.log(data.messages[0].sender.name, 'its a sender');
-        console.log(data, 'new message in socket')
         io.to(data.room).emit("new-messages-received", data);
     });
 });
