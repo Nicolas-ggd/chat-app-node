@@ -6,5 +6,6 @@ router.post('/create-conversation', chatController.CreateConversation);
 router.get('/get-user-conversation', chatController.GetUserConversation);
 router.get('/get-conversation-messages', chatController.GetConversationMessages);
 router.get('/get-conversation-members', chatController.GetConversationMembers);
+router.get('/search-conversation', chatController.SearchConversation);
 
 module.exports = router;

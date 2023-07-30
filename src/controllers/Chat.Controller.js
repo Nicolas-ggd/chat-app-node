@@ -114,9 +114,23 @@ const GetConversationMembers = async (req, res) => {
   }
 };
 
+const SearchConversation = async (req, res) => {
+  const typedValue = req.query.room;
+
+  try {
+    const findConv = await Chat.find({ room: { $regex: typedValue } })
+
+    return res.status(200).json(findConv);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Can't get conversation" });
+  }
+};
+
 module.exports = {
   CreateConversation,
   GetUserConversation,
   GetConversationMessages,
-  GetConversationMembers
+  GetConversationMembers,
+  SearchConversation
 };
