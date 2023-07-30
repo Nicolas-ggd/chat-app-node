@@ -3,12 +3,11 @@ const Chat = require('../models/Chat');
 const CreateConversation = async (req, res) => {
   const convData = req.body;
   const roomId = convData.room;
-  // const messages = convData.messages;
+
   try {
     const existConv = await Chat.find({ "room": roomId });
 
     let newMessages;
-    console.log(convData.isPublic, 'public')
     if (convData.isPublic) {
       newMessages = {
         room: convData.room,
@@ -33,24 +32,23 @@ const CreateConversation = async (req, res) => {
         }]
       };
     }
-
-    console.log(newMessages, 'newMessages')
-
+    console.log(newMessages.messages[0].sender, 'sender boz')
     if (existConv.length > 0) {
       const conversation = existConv[0];
       conversation.messages.push(newMessages.messages[0]);
       await conversation.save();
 
-      console.log(newMessages, 'conversation')
       return res.status(200).json(newMessages);
     } else {
-      const newConv = await Chat.create({
+      console.log(newMessages.messages[0].sender, 'conversation else ')
+      await Chat.create({
         participants: convData.participants,
         createdBy: convData.participants[0],
+        room: convData.room,
         messages: [newMessages.messages[0]]
       });
 
-      return res.status(200).json(newConv);
+      return res.status(200).json(newMessages);
     }
 
   } catch (err) {
@@ -93,6 +91,4 @@ module.exports = {
   CreateConversation,
   GetUserConversation,
   GetConversationMessages
-  // GetPublicConversation,
-  // GetUserAllConversation
 };
