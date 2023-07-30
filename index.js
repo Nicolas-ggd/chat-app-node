@@ -15,7 +15,7 @@ const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
 const { OnlineUserList, RemoveUserOnlineList, userInRoomList, findMembersRoom } = require('./src/utils/UserHelper');
-const { ConversationMembers } = require('./src/utils/UserFunctionHelper');
+const { ConversationMembers, NewConversation, GetNewConv } = require('./src/utils/UserFunctionHelper');
 
 const app = express();
 connectDb();
@@ -76,5 +76,12 @@ io.on("connection", (socket) => {
 
     socket.on("new-messages", (data) => {
         io.to(data.room).emit("new-messages-received", data);
+    });
+
+    socket.on("new-conversation", async (data) => {
+        await NewConversation(data);
+
+        const newConv = await GetNewConv();
+        io.to(data).emit("new-conversation-created", newConv);
     });
 });

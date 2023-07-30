@@ -1,4 +1,6 @@
 const Chat = require('../models/Chat');
+let newConvers = [];
+
 const ConversationMembers = async (room, userId) => {
     try {
         const convMembers = await Chat.findOne({ "room": room });
@@ -18,7 +20,23 @@ const ConversationMembers = async (room, userId) => {
     }
 };
 
+const NewConversation = async (room) => {
+    try {
+        const newConv = await Chat.findOne({ "room": room });
+        newConvers = newConv;
+
+        return newConvers;
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+const GetNewConv = async () => {
+    return newConvers;
+}
 
 module.exports = {
-    ConversationMembers
+    ConversationMembers,
+    NewConversation,
+    GetNewConv
 };
