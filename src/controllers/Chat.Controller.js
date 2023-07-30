@@ -12,6 +12,7 @@ const CreateConversation = async (req, res) => {
       newMessages = {
         room: convData.room,
         createdBy: convData.createdBy,
+        isPublic: convData.isPublic,
         messages: [{
           sender: convData.messages.sender,
           content: convData.messages.content,
@@ -23,6 +24,7 @@ const CreateConversation = async (req, res) => {
       newMessages = {
         room: convData.room,
         createdBy: convData.createdBy,
+        isPublic: convData.isPublic,
         messages: [{
           sender: convData.messages.sender,
           content: convData.messages.content,
@@ -44,6 +46,7 @@ const CreateConversation = async (req, res) => {
         participants: convData.participants,
         createdBy: convData.participants[0],
         room: convData.room,
+        isPublic: convData.isPublic,
         messages: [newMessages.messages[0]]
       });
 
@@ -100,7 +103,8 @@ const GetConversationMembers = async (req, res) => {
 
     const recipients = {
       createdBy: convMembers.createdBy,
-      participants: convMembers.participants
+      participants: convMembers.participants,
+      isPublic: convMembers.isPublic
     };
 
     return res.status(200).json(recipients);
