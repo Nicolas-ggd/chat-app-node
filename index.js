@@ -15,7 +15,7 @@ const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
 const { OnlineUserList, RemoveUserOnlineList, userInRoomList, findMembersRoom } = require('./src/utils/UserHelper');
-const { userInRoom, newConversation, newUserConversation, conversationMembers, roomConvMembers } = require('./src/utils/UserFunctionHelper');
+const { ConversationMembers } = require('./src/utils/UserFunctionHelper');
 
 const app = express();
 connectDb();
@@ -70,6 +70,7 @@ io.on("connection", (socket) => {
         socket.join(roomId);
 
         userInRoomList(roomId, userData);
+        ConversationMembers(roomId, userData.userId)
         io.to(roomId).emit("userJoin", userData);
     });
 
