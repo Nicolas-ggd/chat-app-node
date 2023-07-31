@@ -22,8 +22,14 @@ const ConversationMembers = async (room, userId) => {
 
 const NewConversation = async (room) => {
     try {
-        const newConv = await Chat.findOne({ "room": room });
-        newConvers = newConv;
+        const newConv = await Chat.find({ "room": room });
+
+        console.log(newConv, 'new conv')
+        if (newConv[0].messages.length > 1) {
+            return null
+        }
+        
+        newConvers.push(newConv);
 
         return newConvers;
     } catch (err) {
