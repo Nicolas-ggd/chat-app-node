@@ -26,7 +26,10 @@ app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.options('*', cors())
+app.options('*', cors());
+app.options(cors({
+    origin: 'https://nicolas-ggd-chat.netlify.app'
+}));
 app.use('/register', register);
 app.use('/auth', userAuth);
 app.use('/logout', userLogOut);
