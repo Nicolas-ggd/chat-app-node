@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const verificationHelper = require('../utils/VerificationHelper');
 
 const userRegister = async (req, res) => {
     const { name, email, password } = req.body;
@@ -13,21 +12,11 @@ const userRegister = async (req, res) => {
             });
         }
 
-        const verificationCode = await verificationHelper.generateVerificationCode();
-
         const userCreate = await User.create({
             name,
             email,
             password,
-            verificationCode
         });
-
-        if (userCreate) {
-            await verificationHelper.sendVerificationCode(
-                email,
-                verificationCode
-            );
-        }
 
         return res.status(200).json(userCreate);
     } catch (error) {
