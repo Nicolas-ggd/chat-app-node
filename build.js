@@ -2,14 +2,16 @@ const { exec } = require('child_process');
 
 console.log('Building application...');
 
-exec("node index.js build", (error, stdout, stderr) => {
+exec('ls -lh', (error, stdout, stderr) => {
     if (error) {
-        console.error(`Build failed: ${error.message}`);
+        console.error(`error: ${error.message}`);
         return;
     }
+
     if (stderr) {
-        console.error(`Build error: ${stderr}`);
+        console.error(`stderr: ${stderr}`);
         return;
     }
-    console.log("Build successful!");
+
+    console.log(`stdout:\n${stdout}`);
 });
