@@ -35,7 +35,7 @@ const resetUserPassword = async (req, res) => {
             }
         );
 
-        const resetLink = `http://localhost:5173/reset-password?token=${randomToken}`
+        const resetLink = `https://nicolas-ggd-chat.netlify.app/reset-password?token=${randomToken}`
 
         const nodeTransporter = nodeMailer.createTransport({
             service: 'gmail',
