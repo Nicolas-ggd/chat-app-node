@@ -17,7 +17,7 @@ const resetPassword = require('./src/routes/ResetPassword.Routes');
 const userInfo = require('./src/routes/User.Routes');
 const chat = require('./src/routes/Chat.Routes');
 const { OnlineUserList, RemoveUserOnlineList, userInRoomList, findMembersRoom } = require('./src/utils/UserHelper');
-const { ConversationMembers, NewConversation, GetNewConv } = require('./src/utils/UserFunctionHelper');
+const { ConversationMembers, NewConversation, GetNewConv, conversationMembers, getConvMembers } = require('./src/utils/UserFunctionHelper');
 
 const app = express();
 connectDb();
@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.options('*', cors());
 app.options(cors({
-    origin: 'https://nicolas-ggd-chat.netlify.app'
+    origin: ['https://nicolas-ggd-chat.netlify.app', 'http://localhost:5173']
 }));
 app.use('/register', register);
 app.use('/auth', userAuth);
@@ -47,7 +47,7 @@ console.log(boxen(chalk.red.bgRed.bold("\n" + "Welcome to nicolas ggd server" + 
 const server = app.listen(process.env.PORT, console.log(`Server running on port ${process.env.PORT}`));
 const io = new Server(server, {
     cors: {
-        origin: 'https://nicolas-ggd-chat.netlify.app',
+        origin: ['https://nicolas-ggd-chat.netlify.app', 'http://localhost:5173'],
         methods: ['GET', 'POST'],
     },
 })
@@ -92,4 +92,13 @@ io.on("connection", (socket) => {
         const newConv = await GetNewConv();
         io.to(data).emit("new-conversation-created", newConv);
     });
+
+    socket.on("conversationMembers", async (roomId) => {
+
+        await conversationMembers(roomId);
+
+        const convMembers = await getConvMembers();
+
+        io.to(roomId).emit("conversationMembersList", convMembers);
+    })
 });
