@@ -1,4 +1,5 @@
 const AllowOrigins = [
+    'http://localhost:5173',
     'https://nicolas-ggd-chat.netlify.app/',
     'https://nicolas-ggd-chat.netlify.app',
     'http://localhost:8000/refresh',
