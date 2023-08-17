@@ -23,8 +23,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
     "nodemailer": "^6.9.3",
+    "nodemon": "^x.x.x",
     "socket.io": "^4.7.1",
-    "socket.io-client": "^4.7.1",
-    "nodemon": "^x.x.x"
+    "socket.io-client": "^4.7.1"
   }
 }

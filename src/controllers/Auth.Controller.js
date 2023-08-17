@@ -3,7 +3,7 @@ const generateToken = require('../configs/GenerateToken');
 
 const userAuth = async (req, res) => {
     const { email, password } = req.body;
-    console.log(req.body)
+
     try {
         if (!email || !password) {
             return res.status(400).json({ message: "Email and password are required" });

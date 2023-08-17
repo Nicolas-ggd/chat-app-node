@@ -32,7 +32,7 @@ const SearchUser = async (req, res) => {
         if (searchUsers.length > 0) {
             return res.status(200).json(searchUsers);
         } else {
-            return res.status(404).json({ message: "Users not found" });
+            return res.json({ message: "Users not found" });
         }
     } catch (error) {
         console.log(error);
@@ -63,7 +63,7 @@ const GetUserConversation = async (req, res) => {
             .exec();
 
         if (!userConversation || !_id) {
-            return res.status(400).json({ message: "Can't find user conversation" });
+            return res.json({ message: "Can't find user conversation" });
         }
         return res.status(200).json(userConversation);
 

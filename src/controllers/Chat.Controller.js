@@ -98,7 +98,7 @@ const GetConversationMembers = async (req, res) => {
       .exec();
 
     if (!convMembers) {
-      return res.status(400).json({ message: "Conversation members not found" });
+      return res.json({ message: "Conversation members not found" });
     }
 
     const recipients = {
